@@ -156,6 +156,7 @@ function App() {
             PIERO
           </text>
         </svg>
+        <div className="piero-bg-mobile" aria-hidden="true">PIERO</div>
         <span className="lavy-text">Lavy</span>
         <div className="grain" aria-hidden="true" />
         <div className="scroll-hint" aria-hidden="true">
