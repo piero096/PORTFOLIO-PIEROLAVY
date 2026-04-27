@@ -1,5 +1,9 @@
 import { useState, useEffect } from 'react'
+import { animate, createTimeline, stagger } from 'animejs'
+import PocketBase from 'pocketbase'
 import './App.css'
+
+const pb = new PocketBase('https://poketbasecartas.codestudio.pe')
 
 /* ── Data (edit freely) ───────────────── */
 const NAV_ITEMS = [
@@ -12,83 +16,129 @@ const NAV_ITEMS = [
 
 const JOBS = [
   {
-    company:  'Empresa Tecnológica S.A.',
-    title:    'Desarrollador Frontend Senior',
-    period:   'Ene 2023 — Presente',
-    location: 'Buenos Aires, Argentina',
+    company:  'Serprocom Perú SAC.',
+    title:    'Supervisor  de Redes e Infraestructura',
+    period:   '07/2025 — 12/2025',
+    location: 'Cajamarca, Perú',
     roles: [
-      'Desarrollé interfaces de usuario con React y TypeScript para aplicaciones SaaS con más de 50.000 usuarios activos mensuales.',
-      'Lideré la migración del sistema de diseño legacy a una arquitectura de componentes moderna, reduciendo el tiempo de desarrollo en un 40%.',
-      'Colaboré con el equipo de backend en el diseño e implementación de APIs RESTful consumidas por aplicaciones móviles y web.',
-      'Mentoring a desarrolladores junior y revisión de código en un equipo de 8 personas distribuidas.',
+      'Control, soporte y mantenimiento de sistemas de control de flotas, DISPATCH.',
+      'Programación en PHP y Python para ayudar a mejorarla cobertura de la red Mesh.',
+      'Cableado estructurado.',
+      'Implementación de redes en distintos puntos de unidad minera.',
+      'Instalación y configuración de radio enlaces.',
+      'Configuración y mantenimiento de radios Handy y radio base.',
+      'Configuración y soporte de la red Mesh para operación minera Shahuindo con ARUBA.',
+      'Verificación y soporte de red Vivero y Operaciones mina.',
+      'Soporte de Dispatch en volquetes y excavadoras de alta precisión.',
     ],
   },
   {
-    company:  'Agencia Digital Lorem',
-    title:    'Desarrollador Web Full Stack',
-    period:   'Mar 2021 — Dic 2022',
-    location: 'Remoto',
+    company:  'Serprocom Perú SAC.',
+    title:    'Analista de Redes',
+    period:   '05/2024 — 06/2025',
+    location: 'Cajamarca, Perú',
     roles: [
-      'Construí y mantuve aplicaciones web con PHP (Laravel), MySQL y Vue.js para clientes del sector retail y logístico.',
-      'Implementé pasarelas de pago y sistemas de facturación electrónica integrados con APIs de terceros (MercadoPago, AFIP).',
-      'Optimicé consultas de base de datos críticas logrando una mejora del 60% en tiempos de respuesta.',
-      'Participé activamente en metodología Scrum, gestionando sprints quincenales y revisiones de sprint.',
+      'Programación en Python para ayudar a mejorarla cobertura de la red Mesh.',
+      'Cableado estructurado.',
+      'Instalación de radio enlaces.',
+      'Configuración y mantenimiento de radios Handy y radio base.',
+      'Mantenimiento preventivo de equipos de cómputo.',
+      'Configuración y soporte de la red Mesh para operación minera Shahuindo con ARUBA.',
+      'Soporte de Dispatch en volquetes y excavadoras de alta precisión.',
     ],
   },
   {
-    company:  'StartUp InnovaCode',
-    title:    'Desarrollador Junior',
-    period:   'Jun 2019 — Feb 2021',
-    location: 'Buenos Aires, Argentina',
+    company:  'E y L Consultores',
+    title:    'Asistente de Telecomunicaciones',
+    period:   '12/2023 — 03/2024',
+    location: 'Lima, Perú',
     roles: [
-      'Desarrollé funcionalidades para un CRM interno utilizando Java Spring Boot y Angular como stack principal.',
-      'Automaticé procesos de generación de reportes, ahorrando aproximadamente 15 horas semanales al equipo de operaciones.',
-      'Participé en el diseño de la arquitectura de microservicios que permitió escalar el sistema de 1K a 20K usuarios.',
+      'Cotizaciones de diferentes proyectos.',
+      'Desarrollo de proyectos ya aprobados.',
+      'Implementación de cableado estructurado.',
+      'Configuración de equipos de telecomunicaciones (cisco).',
+      'Creación de reportes de la estructura de telecomunicaciones instaladas.',
+    ],
+  },
+  {
+    company:  'Municipalidad Provincial de San Marcos',
+    title:    'Asistente de TI',
+    period:   '09/2023 — 11/2023',
+    location: 'Cajamarca, Perú',
+    roles: [
+      'Programación de sistemas para agilización del almacén en lenguaje C#.',
+      'Ejecución de proyectos para la automatización de procesos dentro de la Municipalidad.',
+      'Soporte de incidencias técnicas en todas las sedes de las Municipalidad.',
+      'Soporte y actualización de los sistemas existentes de TI.',
+      'Administración de redes dentro y fuera de la Municipalidad.',
+      'Desarrollo de software para algunos procesos dentro de la Municipalidad.',
+      'Documentación de los proyectos asignados.',
+      'Realización de informes técnicos',
+    ],
+  },
+  {
+    company:  'Alvisoft',
+    title:    'Asistente de Sistemas',
+    period:   '12/2021 — 12/2022',
+    location: 'Lima, Perú',
+    roles: [
+      'Programación de módulos para elsistema de planillas en Alvisoft en C#.',
+      'Programación de módulos en C++ para integraciones con plataforma de planillas.',
+      'Soporte y solución a lasincidencias de operatividad delsistema de planillas',
+      'Diseño, desarrollo e implementación de nuevos módulos para el sistema de planillas.',
+      'Registro y reporte de los problemassolucionados en elsistema de planillas.',
+      'Atención y solución de incidencias de los diferentes usuarios del sistema de planillas.',
+      'Capacitación de todo el sistema para colaboradores nuevos en la empresa.',
     ],
   },
 ]
 
 const TECHS = [
   { name: 'PHP',        tag: 'Backend'  },
-  { name: 'Java',       tag: 'Backend'  },
+  { name: 'PYTHON',     tag: 'Backend'  },
+  { name: 'C#',         tag: 'Backend'  },
+  { name: 'SQL',        tag: 'Backend'  },
   { name: 'React',      tag: 'Frontend' },
   { name: 'JavaScript', tag: 'Frontend' },
-  { name: 'CSS',        tag: 'Frontend' },
-  { name: 'Node.js',    tag: 'Backend'  },
 ]
 
 const PROJECTS = [
   {
     num: '01',
-    title: 'Nombre del Proyecto',
-    desc: 'Descripción del proyecto. Explica qué problema resuelve, qué tecnologías usaste y cuál fue tu aporte principal en el desarrollo.',
-    techs: ['React', 'Node.js'],
+    title: 'IMPERIO GYM',
+    desc: 'Desarrollo de una aplicación web para la gestión de gimnasios, incluyendo registro de usuarios, membresías y dispositivos de registro de cleintes y personal.',
+    techs: ['PHP', 'Vue.js', 'Postgres Sql'],
     year: '2024',
-    link: '#',
+    link: 'https://imperiogym.pe/',
   },
   {
     num: '02',
-    title: 'Nombre del Proyecto',
-    desc: 'Descripción del proyecto. Explica qué problema resuelve, qué tecnologías usaste y cuál fue tu aporte principal en el desarrollo.',
-    techs: ['PHP', 'MySQL'],
-    year: '2024',
-    link: '#',
+    title: 'COLEGIO DE PSICÓLOGOS DE CAJAMARCA',
+    desc: 'Desarrollo de una aplicación web para la gestión de colegiados, incluyendo registro de los mismos, pagos de colegiatura, registro de noticias y eventos del colegio de psicólogos.',
+    techs: ['PHP', 'Vue.js', 'Postgres Sql'],
+    year: '2025',
+    link: 'https://cdrcajamarca.pe/',
   },
   {
     num: '03',
-    title: 'Nombre del Proyecto',
-    desc: 'Descripción del proyecto. Explica qué problema resuelve, qué tecnologías usaste y cuál fue tu aporte principal en el desarrollo.',
-    techs: ['Java', 'Spring'],
-    year: '2023',
-    link: '#',
+    title: 'PINEADO DISPATCH - MINERA SHAHUINDO',
+    desc: 'Este programa fue realizado para hacer el pineado a excavadoras de alta precisión y volquetes, en la red mesh, con esto podemos saber qué porcentaje de error tenemos en los paquetes perdidos de la conexión con la red interna.',
+    techs: ['PYTHON'],
+    year: '2025',
+    link: 'https://github.com/piero096/PINEADO-DISPATCH-SHAHUINDO.git',
+  },
+  {
+    num: '04',
+    title: 'UBICACIÓN DE DISPOSITIVOS EN RED MESH - MINERA SHAHUINDO',
+    desc: 'Aplicación web para visualizar en tiempo real la ubicación de equipos en el mapa de la mina Shahuindo mediante geolocalización.',
+    techs: ['REACT', 'NODE.JS', 'ARDUINO'],
+    year: '2025',
+    link: 'https://github.com/piero096/UBICACIONMAPS.git',
   },
 ]
 
-/* About section has a light bg → nav needs dark colors */
 const LIGHT_BG = new Set(['about'])
 
-/* Selector for the main heading of each section.
-   The nav item becomes active when that heading scrolls past 60% of the viewport. */
 const SECTION_HEADING: Record<string, string> = {
   home:       '#home',
   about:      '#about .about-heading',
@@ -97,16 +147,32 @@ const SECTION_HEADING: Record<string, string> = {
   contact:    '#contact .contact-heading',
 }
 
+
 /* ── Component ────────────────────────── */
 function App() {
   const [active, setActive] = useState('home')
 
+  const [form, setForm] = useState({ nombre: '', email: '', mensaje: '' })
+  const [status, setStatus] = useState<'idle' | 'sending' | 'ok' | 'error'>('idle')
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setStatus('sending')
+    try {
+      await pb.collection('portafolio_piero').create(form)
+      setStatus('ok')
+      setForm({ nombre: '', email: '', mensaje: '' })
+      setTimeout(() => setStatus('idle'), 4000)
+    } catch (err) {
+      console.error('PocketBase error:', err)
+      setStatus('error')
+    }
+  }
+
+  /* ── Scroll tracking ── */
   useEffect(() => {
     const ids = NAV_ITEMS.map(n => n.href.slice(1))
-
     const onScroll = () => {
-      // The active section is the last one whose heading has crossed
-      // 60% down from the top of the viewport.
       const trigger = window.innerHeight * 0.6
       let current = ids[0]
       for (const id of ids) {
@@ -116,10 +182,106 @@ function App() {
       }
       setActive(current)
     }
-
     window.addEventListener('scroll', onScroll, { passive: true })
-    onScroll() // set correct state on first render
+    onScroll()
     return () => window.removeEventListener('scroll', onScroll)
+  }, [])
+
+  /* ── Anime.js animations ── */
+  useEffect(() => {
+
+    /* Observer con entrada Y salida */
+    function watch(sel: string, enter: () => void, exit: () => void) {
+      const el = document.querySelector(sel)
+      if (!el) return
+      let inside = false
+      new IntersectionObserver(([e]) => {
+        if (e.isIntersecting && !inside)  { inside = true;  enter() }
+        if (!e.isIntersecting && inside)  { inside = false; exit()  }
+      }, { threshold: 0.12 }).observe(el)
+    }
+
+    /* ─── HERO entrance (una sola vez al cargar) ─── */
+    const tl = createTimeline({ defaults: { ease: 'outExpo' } })
+    tl.add('.piero-bg', {
+      clipPath: ['inset(100% 0% 0% 0%)', 'inset(0% 0% 0% 0%)'],
+      opacity:  [0, 1], duration: 1600,
+    })
+    .add('.piero-bg-mobile', {
+      clipPath: ['inset(100% 0% 0% 0%)', 'inset(0% 0% 0% 0%)'],
+      opacity:  [0, 1], duration: 1600,
+    }, 0)
+    .add('.lavy-char', {
+      opacity: [0, 1], translateY: [-80, 0], rotate: ['-14deg', '0deg'],
+      delay: stagger(75), duration: 900, ease: 'outBack',
+    }, '-=1000')
+    .add('.hero-shimmer', {
+      translateX: ['-5%', '105%'], duration: 1100, ease: 'linear',
+    }, '-=400')
+    .add('.timeline-item', {
+      opacity: [0, 1], translateX: [50, 0], delay: stagger(80), duration: 700,
+    }, '-=700')
+    .add('.scroll-hint', {
+      opacity: [0, 1], translateY: [24, 0], duration: 600,
+    }, '-=250')
+
+    /* ─── ABOUT ─── */
+    watch('#about',
+      () => {
+        animate('.about-photo-wrap',          { opacity: [0,1], translateX: [-40,0], duration: 900, ease: 'outExpo' })
+        animate('.about-left-col .eyebrow',   { opacity: [0,1], translateY: [20,0],  duration: 700, delay: 180, ease: 'outExpo' })
+        animate('.about-role',                { opacity: [0,1], translateY: [30,0],  duration: 800, delay: 280, ease: 'outExpo' })
+        animate('.about-left-col .body-text', { opacity: [0,1], translateY: [20,0],  duration: 700, delay: stagger(110, { start: 420 }), ease: 'outExpo' })
+        animate('.about-right-col',           { opacity: [0,1], translateX: [35,0],  duration: 900, delay: 250, ease: 'outExpo' })
+        animate('.tech-item',                 { opacity: [0,1], translateX: [-20,0], duration: 600, delay: stagger(65, { start: 520 }), ease: 'outExpo' })
+      },
+      () => {
+        animate('.about-photo-wrap',          { opacity: [1,0], translateX: [0,-30], duration: 450, ease: 'inExpo' })
+        animate('.about-role',                { opacity: [1,0], translateY: [0,-20], duration: 400, ease: 'inExpo' })
+        animate('.about-left-col .eyebrow',   { opacity: [1,0], translateY: [0,-15], duration: 380, ease: 'inExpo' })
+        animate('.about-left-col .body-text', { opacity: [1,0], translateY: [0,-15], duration: 350, delay: stagger(40), ease: 'inExpo' })
+        animate('.about-right-col',           { opacity: [1,0], translateX: [0,25],  duration: 420, ease: 'inExpo' })
+      }
+    )
+
+    /* ─── EXPERIENCE ─── */
+    watch('#experience',
+      () => {
+        animate('#experience .exp-header', { opacity: [0,1], translateX: [-40,0], duration: 900, ease: 'outExpo' })
+        animate('.exp-card',               { opacity: [0,1], translateY: [30,0],  duration: 700, delay: stagger(90, { start: 250 }), ease: 'outExpo' })
+      },
+      () => {
+        animate('#experience .exp-header', { opacity: [1,0], translateX: [0,-30], duration: 450, ease: 'inExpo' })
+        animate('.exp-card',               { opacity: [1,0], translateY: [0,-20], duration: 380, delay: stagger(50), ease: 'inExpo' })
+      }
+    )
+
+    /* ─── PROJECTS ─── */
+    watch('#projects',
+      () => {
+        animate('#projects .projects-header', { opacity: [0,1], translateX: [40,0],  duration: 900, ease: 'outExpo' })
+        animate('.project-card',              { opacity: [0,1], translateY: [35,0],  duration: 750, delay: stagger(110, { start: 300 }), ease: 'outExpo' })
+      },
+      () => {
+        animate('#projects .projects-header', { opacity: [1,0], translateX: [0,30],  duration: 450, ease: 'inExpo' })
+        animate('.project-card',              { opacity: [1,0], translateY: [0,-20], duration: 380, delay: stagger(50), ease: 'inExpo' })
+      }
+    )
+
+    /* ─── CONTACT ─── */
+    watch('#contact',
+      () => {
+        animate('#contact .contact-heading', { opacity: [0,1], translateY: [50,0],  duration: 1000, ease: 'outExpo' })
+        animate('.form-field',               { opacity: [0,1], translateY: [25,0],  duration: 650,  delay: stagger(90, { start: 350 }), ease: 'outExpo' })
+        animate('.form-submit',              { opacity: [0,1], translateY: [20,0],  duration: 600,  delay: 700, ease: 'outExpo' })
+      },
+      () => {
+        animate('#contact .contact-heading', { opacity: [1,0], translateY: [0,-30], duration: 450, ease: 'inExpo' })
+        animate('.form-field',               { opacity: [1,0], translateY: [0,-15], duration: 350, delay: stagger(35), ease: 'inExpo' })
+        animate('.form-submit',              { opacity: [1,0], translateY: [0,-15], duration: 300, ease: 'inExpo' })
+      }
+    )
+
   }, [])
 
   const navDark = LIGHT_BG.has(active)
@@ -157,7 +319,17 @@ function App() {
           </text>
         </svg>
         <div className="piero-bg-mobile" aria-hidden="true">PIERO</div>
-        <span className="lavy-text">Lavy</span>
+
+        {/* Wrapper fijo para centrado — NO tocado por anime.js */}
+        <div className="lavy-outer" aria-hidden="true">
+          {['L','a','v','y'].map((ch, i) => (
+            <span key={i} className="lavy-char">{ch}</span>
+          ))}
+        </div>
+
+        {/* Línea de shimmer que barre el hero */}
+        <div className="hero-shimmer" aria-hidden="true" />
+
         <div className="grain" aria-hidden="true" />
         <div className="scroll-hint" aria-hidden="true">
           <span className="scroll-line" />
@@ -170,11 +342,25 @@ function App() {
         <span className="sec-num" aria-hidden="true">01</span>
         <div className="about-inner">
 
-          <div className="about-left">
+          {/* ── IZQUIERDA: foto + texto ── */}
+          <div className="about-left-col">
+
+            {/* Foto e "INGENIERO DE SISTEMAS" en la misma fila */}
+            <div className="about-photo-row">
+              <div className="about-photo-wrap">
+                <img
+                  src="/piero-photo.png"
+                  alt="Piero Lavy"
+                  className="about-photo"
+                />
+              </div>
+              <p className="about-role">
+                <span className="about-role-top">INGENIERO</span>
+                <span className="about-role-bottom">DE SISTEMAS</span>
+              </p>
+            </div>
+
             <p className="eyebrow">— Sobre mí</p>
-            <h2 className="about-heading">
-              Desarrollador<br />Full Stack
-            </h2>
             <p className="body-text">
               Hola, soy <strong>Piero Lavy</strong>. Desarrollador apasionado por construir
               experiencias digitales que combinan diseño visual impactante con soluciones
@@ -186,8 +372,9 @@ function App() {
             </p>
           </div>
 
-          <div className="about-right">
-            <p className="eyebrow">— Stack técnico</p>
+          {/* ── DERECHA: stack técnico ── */}
+          <div className="about-right-col">
+            <p className="eyebrow about-stack-label">— Stack técnico</p>
             <ul className="tech-list">
               {TECHS.map(t => (
                 <li key={t.name} className="tech-item">
@@ -250,7 +437,7 @@ function App() {
                   <div className="proj-tags">
                     {p.techs.map(t => <span key={t} className="ptag">{t}</span>)}
                   </div>
-                  <a href={p.link} className="proj-link">Ver proyecto →</a>
+                  <a href={p.link} className="proj-link" target='_blank'>Ver proyecto →</a>
                 </div>
               </div>
             </li>
@@ -273,27 +460,53 @@ function App() {
               freelance y colaboraciones.
             </p>
             <div className="contact-meta">
-              <span className="contact-detail">hello@pierolavy.com</span>
-              <span className="contact-detail">Buenos Aires, Argentina</span>
+              <span className="contact-detail">lavypiero096@gmail.com</span>
+              <span className="contact-detail">Cajamarca, Perú</span>
             </div>
           </div>
 
-          <form className="contact-form" onSubmit={e => e.preventDefault()}>
+          <form className="contact-form" onSubmit={handleSubmit}>
             <div className="form-field">
               <label className="form-label">Nombre</label>
-              <input className="form-input" type="text" placeholder="Tu nombre completo" />
+              <input
+                className="form-input"
+                type="text"
+                placeholder="Tu nombre completo"
+                value={form.nombre}
+                onChange={e => setForm(f => ({ ...f, nombre: e.target.value }))}
+                required
+              />
             </div>
             <div className="form-field">
               <label className="form-label">Email</label>
-              <input className="form-input" type="email" placeholder="tu@email.com" />
+              <input
+                className="form-input"
+                type="email"
+                placeholder="tu@email.com"
+                value={form.email}
+                onChange={e => setForm(f => ({ ...f, email: e.target.value }))}
+                required
+              />
             </div>
             <div className="form-field">
               <label className="form-label">Mensaje</label>
-              <textarea className="form-input form-textarea"
-                placeholder="Cuéntame sobre tu proyecto…" rows={5} />
+              <textarea
+                className="form-input form-textarea"
+                placeholder="Cuéntame sobre tu proyecto…"
+                rows={5}
+                value={form.mensaje}
+                onChange={e => setForm(f => ({ ...f, mensaje: e.target.value }))}
+                required
+              />
             </div>
-            <button className="form-submit" type="submit">
-              Enviar mensaje <span className="btn-arrow">→</span>
+            {status === 'ok' && (
+              <p className="form-status form-status--ok">¡Mensaje enviado! Me pondré en contacto pronto.</p>
+            )}
+            {status === 'error' && (
+              <p className="form-status form-status--error">Algo salió mal. Intenta de nuevo.</p>
+            )}
+            <button className="form-submit" type="submit" disabled={status === 'sending'}>
+              {status === 'sending' ? 'Enviando…' : <>Enviar mensaje <span className="btn-arrow">→</span></>}
             </button>
           </form>
 
@@ -308,9 +521,8 @@ function App() {
         </div>
         <span className="ft-copy">© 2026 — Todos los derechos reservados</span>
         <div className="ft-links">
-          <a href="#" className="ft-link">GitHub</a>
-          <a href="#" className="ft-link">LinkedIn</a>
-          <a href="#" className="ft-link">Email</a>
+          <a href="https://github.com/piero096" className="ft-link" target="_blank">GitHub</a>
+          <a href="https://www.linkedin.com/in/piero-alessandro-lavy-aguilar-a8b6282a1?utm_source=share_via&utm_content=profile&utm_medium=member_ios" className="ft-link" target="_blank">LinkedIn</a>
         </div>
       </footer>
 

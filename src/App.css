@@ -117,7 +117,8 @@ body {
   overflow: visible;
 }
 
-.lavy-text {
+/* Wrapper de centrado — el transform aquí NUNCA es tocado por anime.js */
+.lavy-outer {
   position: absolute;
   left: 50%;
   top: 50%;
@@ -128,6 +129,31 @@ body {
   color: rgba(241, 181, 96, 0.78);
   white-space: nowrap;
   letter-spacing: 0.04em;
+  display: block;
+}
+
+/* Cada carácter de "Lavy" — anime.js los anima individualmente */
+.lavy-char {
+  display: inline-block;
+}
+
+/* Línea shimmer dorada que barre el hero */
+.hero-shimmer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 5px;
+  height: 100%;
+  background: linear-gradient(
+    to bottom,
+    transparent 0%,
+    rgba(241, 181, 96, 0.25) 30%,
+    rgba(241, 181, 96, 0.75) 50%,
+    rgba(241, 181, 96, 0.25) 70%,
+    transparent 100%
+  );
+  z-index: 20;
+  pointer-events: none;
 }
 
 .grain {
@@ -162,7 +188,7 @@ body {
 }
 .scroll-label {
   font-family: 'Bebas Neue', sans-serif;
-  font-size: 0.85rem;
+  font-size: 2rem;
   letter-spacing: 0.35em;
   color: rgba(248, 236, 218, 0.75);
 }
@@ -196,7 +222,7 @@ body {
 
 .eyebrow {
   font-family: 'Bebas Neue', sans-serif;
-  font-size: 0.78rem;
+  font-size: 1.75rem;
   letter-spacing: 0.32em;
   color: #c93628;
   display: block;
@@ -219,12 +245,69 @@ body {
 .about-inner {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 7rem;
+  gap: 6rem;
   max-width: 1200px;
   width: 100%;
   margin: 0 auto;
   position: relative;
   z-index: 1;
+  align-items: start;
+}
+
+/* ── Izquierda: foto + texto ── */
+.about-left-col {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Fila: foto + "INGENIERO DE SISTEMAS" lado a lado */
+.about-photo-row {
+  display: flex;
+  align-items: center;
+  gap: 2.2rem;
+  margin-bottom: 2.8rem;
+}
+
+.about-photo-wrap {
+  position: relative;
+  width: 200px;
+  flex-shrink: 0;
+}
+
+.about-role {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(3.5rem, 6vw, 7rem);
+  letter-spacing: 0.03em;
+  line-height: 0.92;
+  display: flex;
+  flex-direction: column;
+  white-space: nowrap;
+  -webkit-text-stroke: 1px currentColor;
+}
+
+.about-role-top {
+  color: #1a0c08;
+}
+
+.about-role-bottom {
+  color: #c93628;
+}
+
+.about-photo {
+  display: block;
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+  object-position: top center;
+  filter: drop-shadow(0 8px 16px rgba(26, 12, 8, 0.35))
+          drop-shadow(0 20px 35px rgba(26, 12, 8, 0.2));
+}
+
+/* ── Derecha: stack técnico ── */
+.about-right-col {
+  display: flex;
+  flex-direction: column;
+  padding-top: 1rem;
 }
 
 .about-heading {
@@ -237,13 +320,17 @@ body {
 }
 
 .body-text {
-  font-size: 1rem;
+  font-size: 1.15rem;
   line-height: 1.8;
   color: rgba(26, 12, 8, 0.65);
   margin-bottom: 1.1rem;
   max-width: 460px;
 }
 .body-text strong { color: #1a0c08; font-weight: 600; }
+
+.about-stack-label {
+  margin-top: 2rem;
+}
 
 /* Tech list */
 .tech-list {
@@ -262,12 +349,12 @@ body {
 
 .tech-name {
   font-family: 'Bebas Neue', sans-serif;
-  font-size: 1.45rem;
+  font-size: 1.65rem;
   letter-spacing: 0.06em;
   color: #1a0c08;
 }
 .tech-badge {
-  font-size: 0.65rem;
+  font-size: 0.78rem;
   letter-spacing: 0.18em;
   text-transform: uppercase;
   color: rgba(26, 12, 8, 0.4);
@@ -296,7 +383,7 @@ body {
 
 .exp-list {
   list-style: none;
-  max-width: 1040px;
+  width: 100%;
   display: flex;
   flex-direction: column;
   gap: 0;
@@ -350,14 +437,14 @@ body {
 
 .exp-period {
   font-family: 'Bebas Neue', sans-serif;
-  font-size: 0.8rem;
+  font-size: 0.95rem;
   letter-spacing: 0.14em;
   color: rgba(232, 213, 179, 0.55);
   line-height: 1.4;
 }
 
 .exp-location {
-  font-size: 0.72rem;
+  font-size: 0.85rem;
   letter-spacing: 0.06em;
   color: rgba(232, 213, 179, 0.28);
 }
@@ -366,7 +453,7 @@ body {
 
 .exp-company {
   font-family: 'Bebas Neue', sans-serif;
-  font-size: 0.78rem;
+  font-size: 1.7rem;
   letter-spacing: 0.22em;
   color: #c93628;
   margin-bottom: 0.4rem;
@@ -384,7 +471,7 @@ body {
 .exp-roles { list-style: none; display: flex; flex-direction: column; gap: 0.8rem; }
 
 .exp-role {
-  font-size: 0.9rem;
+  font-size: 1.05rem;
   line-height: 1.7;
   color: rgba(232, 213, 179, 0.5);
   padding-left: 1.1rem;
@@ -423,7 +510,7 @@ body {
 
 .projects-list {
   list-style: none;
-  max-width: 960px;
+  width: 100%;
   position: relative;
   z-index: 1;
 }
@@ -440,7 +527,7 @@ body {
 
 .proj-num {
   font-family: 'Bebas Neue', sans-serif;
-  font-size: 0.85rem;
+  font-size: 1rem;
   letter-spacing: 0.18em;
   color: #c93628;
   flex-shrink: 0;
@@ -467,14 +554,14 @@ body {
 
 .proj-year {
   font-family: 'Bebas Neue', sans-serif;
-  font-size: 0.8rem;
+  font-size: 0.95rem;
   letter-spacing: 0.2em;
   color: rgba(232, 213, 179, 0.25);
   flex-shrink: 0;
 }
 
 .proj-desc {
-  font-size: 0.9rem;
+  font-size: 1.05rem;
   line-height: 1.75;
   color: rgba(232, 213, 179, 0.45);
   margin-bottom: 1.5rem;
@@ -492,7 +579,7 @@ body {
 
 .ptag {
   font-family: 'Bebas Neue', sans-serif;
-  font-size: 0.7rem;
+  font-size: 0.82rem;
   letter-spacing: 0.14em;
   color: #c93628;
   border: 1px solid rgba(201, 54, 40, 0.35);
@@ -501,7 +588,7 @@ body {
 
 .proj-link {
   font-family: 'Bebas Neue', sans-serif;
-  font-size: 0.8rem;
+  font-size: 0.95rem;
   letter-spacing: 0.16em;
   color: rgba(232, 213, 179, 0.35);
   text-decoration: none;
@@ -545,7 +632,7 @@ body {
 }
 
 .contact-sub {
-  font-size: 1rem;
+  font-size: 1.15rem;
   line-height: 1.75;
   color: rgba(232, 213, 179, 0.75);
   margin-bottom: 2.5rem;
@@ -556,7 +643,7 @@ body {
 
 .contact-detail {
   font-family: 'Bebas Neue', sans-serif;
-  font-size: 0.85rem;
+  font-size: 1rem;
   letter-spacing: 0.15em;
   color: rgba(232, 213, 179, 0.55);
 }
@@ -568,7 +655,7 @@ body {
 
 .form-label {
   font-family: 'Bebas Neue', sans-serif;
-  font-size: 0.72rem;
+  font-size: 0.88rem;
   letter-spacing: 0.24em;
   color: rgba(232, 213, 179, 0.55);
 }
@@ -578,7 +665,7 @@ body {
   border: 1px solid rgba(232, 213, 179, 0.22);
   color: #e8d5b3;
   font-family: 'DM Sans', system-ui, sans-serif;
-  font-size: 0.95rem;
+  font-size: 1.05rem;
   padding: 0.85rem 1.1rem;
   outline: none;
   border-radius: 0;
@@ -602,7 +689,7 @@ body {
   color: #1a0c08;
   border: none;
   font-family: 'Bebas Neue', sans-serif;
-  font-size: 1rem;
+  font-size: 1.15rem;
   letter-spacing: 0.22em;
   padding: 1rem 1.6rem;
   cursor: pointer;
@@ -610,9 +697,14 @@ body {
   transition: background 0.2s, color 0.2s;
 }
 .form-submit:hover { background: #1a0c08; color: #e8d5b3; }
+.form-submit:disabled { opacity: 0.6; cursor: not-allowed; }
 
 .btn-arrow { transition: transform 0.2s; }
 .form-submit:hover .btn-arrow { transform: translateX(5px); }
+
+.form-status { font-size: 0.9rem; padding: 0.6rem 1rem; border-radius: 6px; margin-bottom: 0.5rem; }
+.form-status--ok    { background: rgba(232,213,179,0.15); color: #e8d5b3; border: 1px solid rgba(232,213,179,0.3); }
+.form-status--error { background: rgba(26,12,8,0.2); color: #e8d5b3; border: 1px solid rgba(232,213,179,0.2); }
 
 
 /* ═══════════════════════════════════════════
@@ -632,18 +724,18 @@ body {
 
 .ft-piero {
   font-family: 'Bebas Neue', sans-serif;
-  font-size: 1.3rem;
+  font-size: 1.9rem;
   color: rgba(232, 213, 179, 0.75);
   letter-spacing: 0.1em;
 }
 .ft-lavy {
   font-family: 'Pacifico', cursive;
-  font-size: 0.8rem;
+  font-size: 1.1rem;
   color: rgba(241, 181, 96, 0.65);
 }
 
 .ft-copy {
-  font-size: 0.72rem;
+  font-size: 0.9rem;
   color: rgba(232, 213, 179, 0.25);
   letter-spacing: 0.08em;
 }
@@ -652,7 +744,7 @@ body {
 
 .ft-link {
   font-family: 'Bebas Neue', sans-serif;
-  font-size: 0.78rem;
+  font-size: 1rem;
   letter-spacing: 0.2em;
   color: rgba(232, 213, 179, 0.35);
   text-decoration: none;
@@ -669,12 +761,13 @@ body {
   justify-content: center;
   align-items: center;
   font-family: 'Bebas Neue', sans-serif;
-  font-size: 34vw;
+  font-size: 50vw;
   color: #c93628;
   letter-spacing: 0.02em;
   user-select: none;
   pointer-events: none;
   z-index: 1;
+  transform: scaleY(4);
 }
 
 
@@ -723,8 +816,8 @@ body {
   .piero-bg-mobile { display: flex; }
 
   /* Lavy: el clamp tenía mínimo 13rem (≈208px), demasiado grande en móvil */
-  .lavy-text {
-    font-size: clamp(4.5rem, 21vw, 8rem);
+  .lavy-outer {
+    font-size: clamp(0.5rem, 18vw, 8rem);
     z-index: 6;
   }
 
@@ -761,4 +854,16 @@ body {
 
   /* ── Footer ── */
   .footer { padding: 2rem 1.5rem; flex-direction: column; align-items: flex-start; }
+
+  .piero-bg-mobile {
+  
+  transform: scaleY(4);}
+
+
+}
+
+@media (min-width: 370px) {
+  .piero-bg-mobile {
+    transform: scaleY(3);
+  }
 }
