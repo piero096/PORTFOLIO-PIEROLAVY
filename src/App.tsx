@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { animate, createTimeline, stagger } from 'animejs'
 import PocketBase from 'pocketbase'
+import pieroPhoto from '/piero-photo.png'
 import './App.css'
 
 const pb = new PocketBase('https://poketbasecartas.codestudio.pe')
@@ -222,7 +223,7 @@ function App() {
       opacity: [0, 1], translateX: [50, 0], delay: stagger(80), duration: 700,
     }, '-=700')
     .add('.scroll-hint', {
-      opacity: [0, 1], translateY: [24, 0], duration: 600,
+      opacity: [0, 1], duration: 600,
     }, '-=250')
 
     /* ─── ABOUT ─── */
@@ -349,7 +350,7 @@ function App() {
             <div className="about-photo-row">
               <div className="about-photo-wrap">
                 <img
-                  src="/piero-photo.png"
+                  src={pieroPhoto}
                   alt="Piero Lavy"
                   className="about-photo"
                 />

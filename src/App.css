@@ -761,13 +761,14 @@ body {
   justify-content: center;
   align-items: center;
   font-family: 'Bebas Neue', sans-serif;
-  font-size: 50vw;
+  font-size: 36vw;
   color: #c93628;
   letter-spacing: 0.02em;
+  white-space: nowrap;
   user-select: none;
   pointer-events: none;
   z-index: 1;
-  transform: scaleY(4);
+  transform: scaleY(6);
 }
 
 
@@ -807,17 +808,21 @@ body {
   }
   /* ── Hero ── */
   .hero {
-    height: 65vh;
-    min-height: 320px;
+    height: 100vh;
   }
 
-  /* SVG distorsionado → ocultar; mostrar versión CSS */
-  .piero-bg { display: none; }
-  .piero-bg-mobile { display: flex; }
+  /* SVG en mobile: offset top para respiración, preserveAspectRatio="none" garantiza ancho completo */
+  .piero-bg {
+    height: 92%;
+    left: 0;
+    right: 0;
+    bottom: auto;
+  }
 
   /* Lavy: el clamp tenía mínimo 13rem (≈208px), demasiado grande en móvil */
   .lavy-outer {
     font-size: clamp(0.5rem, 18vw, 8rem);
+    top: 35%;
     z-index: 6;
   }
 
@@ -827,7 +832,26 @@ body {
   .projects-section,
   .contact-section { padding: 5rem 1.2rem 5rem; }
 
-  /* ── Tech list: evitar que el badge se corte en pantallas < 360px ── */
+  /* ── About: foto y rol en columna, tamaños adaptados ── */
+  .about-photo-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+    margin-bottom: 1.8rem;
+  }
+  .about-photo-wrap { width: 100px; }
+  .about-role { font-size: clamp(2rem, 9vw, 3.2rem); }
+
+  /* ── Eyebrow: reducir espaciado para textos largos ── */
+  .eyebrow {
+    font-size: 1.3rem;
+    letter-spacing: 0.2em;
+  }
+
+  /* ── Contact: email largo no desborda ── */
+  .contact-detail { word-break: break-all; }
+
+  /* ── Tech list ── */
   .tech-item {
     flex-wrap: wrap;
     gap: 0.25rem 0;
@@ -855,15 +879,35 @@ body {
   /* ── Footer ── */
   .footer { padding: 2rem 1.5rem; flex-direction: column; align-items: flex-start; }
 
-  .piero-bg-mobile {
-  
-  transform: scaleY(4);}
-
-
 }
 
-@media (min-width: 370px) {
-  .piero-bg-mobile {
-    transform: scaleY(3);
+/* ── Extra fine-tuning para pantallas muy pequeñas (≤ 360px) ── */
+@media (max-width: 360px) {
+  .lavy-outer {
+    font-size: 25vw;
+    top: 50%;
+  }
+  .scroll-label {
+    font-size: 1.4rem;
+    letter-spacing: 0.2em;
+  }
+  .about-photo-row {
+    align-items: center;
+    justify-content: center;
+  }
+  .about-photo-wrap { width: 250px; }
+  .about-role {
+    font-size: clamp(2.8rem, 11vw, 3.8rem);
+    align-items: center;
+    text-align: center;
+  }
+  .sec-heading { font-size: clamp(2.8rem, 10vw, 4rem); }
+  .about-section,
+  .exp-section,
+  .projects-section,
+  .contact-section { padding: 4rem 1rem 4rem; }
+
+  .scroll-hint {
+  bottom: 3.6rem;
   }
 }
